@@ -37,3 +37,27 @@ document.getElementById("logout-btn").addEventListener("click", () => {
   document.getElementById("login-container").style.display = "flex";
   document.getElementById("dashboard").style.display = "none";
 });
+async function renderVehicles() {
+  try {
+    const response = await fetch('/api/vehicles');
+    const vehicles = await response.json();
+    
+    const vehicleList = document.getElementById('vehicle-list');
+    vehicleList.innerHTML = ''; // Clear existing content
+    
+    vehicles.forEach(vehicle => {
+      const vehicleCard = document.createElement('div');
+      vehicleCard.className = 'vehicle-card';
+      vehicleCard.innerHTML = `
+        <h3>${vehicle.vehicleNumber}</h3>
+        <p>Status: ${vehicle.status}</p>
+        <p>Last Maintenance: ${vehicle.lastMaintenance || 'N/A'}</p>
+        <p>Mileage: ${vehicle.mileage || '0'} miles</p>
+        <button class="update-btn" data-id="${vehicle._id}">Update Status</button>
+      `;
+      vehicleList.appendChild(vehicleCard);
+    });
+  } catch (error) {
+    console.error('Error loading vehicles:', error);
+  }
+}
